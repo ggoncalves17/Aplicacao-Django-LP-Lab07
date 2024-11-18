@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Apagar Tópico</h1>
+    <p>Deseja mesmo remover o tópico <strong>{{ topic.title }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sim</button>
+        <a href="{% url 'topic_list' %}" class="btn btn-secondary">Não</a>
+    </form>
+</div>
+{% endblock %}

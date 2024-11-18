@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if topics_list %}
-<ul class="list-group">
-    {% for topic in topics_list %}
-    <li class="list-group-item">{{ topic.title }}
-        <button type="button" class="btn btn-primary">Editar</button>
-        <button type="button" class="btn btn-danger">Apagar</button>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<h1>Sem registos!</h1>
-{% endif %}
+
+<div class="container mt-4">
+    <ul class="list-group">
+        {% for topic in topics_list %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <h5>{{ topic.title }}</h5>
+                <small>by {{ topic.author }} on {{ topic.description }}</small>
+                <div>
+                    <button type="button" class="btn btn-primary">Editar</button>
+                    <a href="{% url 'topic_delete' topic.id %}" class="btn btn-danger">Apagar</a>
+                </div>    
+            </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Não existem tópicos disponíveis.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
