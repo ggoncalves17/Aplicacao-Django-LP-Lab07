@@ -8,10 +8,11 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
                 <h5>{{ topic.title }}</h5>
-                <small>by {{ topic.author }} on {{ topic.description }}</small>
+                <p>{{ topic.description }}</p>
                 <div>
-                    <button type="button" class="btn btn-primary">Editar</button>
+                    <a href="{% url 'topic_update' topic.id %}" class="btn btn-primary">Editar</a>
                     <a href="{% url 'topic_delete' topic.id %}" class="btn btn-danger">Apagar</a>
+                    <a href="{% url 'topic_detail' topic.id %}" class="btn btn-secondary">Ver Detalhes</a>
                 </div>    
             </div>
         </li>
