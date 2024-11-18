@@ -1,0 +1,1 @@
+# lab07-lp-DJANGO
