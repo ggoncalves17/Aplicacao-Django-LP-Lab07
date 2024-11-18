@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ topic.title }}</h1>
+    <p>{{ topic.description }}</p>
+    <small>Criado por: <strong>{{ topic.author }}</strong> em {{ topic.created_at }}</small>
+
+    <hr>
+    <div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Comentários</h2>
+            <form method="post" class="d-flex">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Adicionar Comentário</button>
+            </form>
+        </div>
+    </div>
+    
+    
+    <ul class="list-group">
+        {% for comment in topic.comments.all %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ comment.text }}
+            <div>
+                <a href="{% url 'comment_edit' comment.id %}" class="btn btn-primary btn-sm">Edit</a>
+                <a href="{% url 'comment_delete' comment.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item">Não existem comentários.</li>
+        {% endfor %}
+    </ul>
+   
+</div>
+{% endblock %}

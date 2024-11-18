@@ -28,8 +28,9 @@ def criacao_topicos(request):
 
 
 @login_required
-def detalhes_topicos(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
+def detalhes_topicos(request, topic_id):
+    topic = get_object_or_404(Topic, id=topic_id)
+    return render(request, "topics_app/detalhesTopico.html", {"topic": topic})
 
 
 @login_required
@@ -60,11 +61,3 @@ def editar_topico(request, topic_id):
     return render(request, "topics_app/criarTopico.html", {"form": form})
 
 
- 
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
-
-
-def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)

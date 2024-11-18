@@ -7,6 +7,5 @@ urlpatterns = [
     path('topics/<int:topic_id>/', views.detalhes_topicos, name='topic_detail'),
     path('topics/<int:topic_id>/delete/', views.apagar_topico, name='topic_delete'),
     path('topics/<int:topic_id>/edit/', views.editar_topico, name='topic_update'),
-
 ]
 
