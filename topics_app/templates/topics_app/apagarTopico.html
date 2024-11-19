@@ -1,13 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>Apagar Tópico</h1>
-    <p>Deseja mesmo remover o tópico <strong>{{ topic.title }}</strong>?</p>
+<div class="container mt-4 ">
+    <h1>{{ title }}</h1>
+
+    <p>Deseja mesmo remover o 
+        {% if title == "Apagar Tópico" %}
+            tópico
+        {% else %}
+            comentário
+        {% endif %}
+        <strong>{{ topic.title }}</strong>?
+    </p>
+
     <form method="post">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Sim</button>
-        <a href="{% url 'topic_list' %}" class="btn btn-secondary">Não</a>
+        {% if title == "Apagar Tópico" %}
+            <a href="{% url 'topic_list' %}" class="btn btn-secondary">Não</a>
+        {% else %}
+            <a href="{% url 'topic_detail' comment.topic.id %}" class="btn btn-secondary">Não</a>
+        {% endif %}
     </form>
 </div>
 {% endblock %}

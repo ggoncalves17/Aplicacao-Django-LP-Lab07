@@ -27,8 +27,10 @@
                 <small>Criado por: <strong>{{ comment.author }}</strong> em {{ comment.created_at }}</small>   
             </div>
             <div>
-                <a href="" class="btn btn-outline-primary btn-sm">Editar</a>
-                <a href="" class="btn btn-outline-danger btn-sm">Apagar</a>
+                {% if request.user == comment.author %}
+                    <a href="{% url 'comment_update' comment.id %}" class="btn btn-outline-primary btn-sm">Editar</a>
+                    <a href="{% url 'comment_delete' comment.id %}" class="btn btn-outline-danger btn-sm">Apagar</a>
+                {% endif %}
             </div>
         </li>
         {% empty %}

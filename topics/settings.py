@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# REFERÊNCIAS -> https://docs.djangoproject.com/en/5.1/ref/settings/#login-url
+LOGIN_URL = "/admin/"
 
 # Application definition
 
