@@ -13,7 +13,7 @@
             <form method="post" class="d-flex">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Adicionar Comentário</button>
+                <a href="{% url 'comment_create' topic.id %}" class="btn btn-primary btn-sm">Adicionar Comentário</a>
             </form>
         </div>
     </div>
@@ -22,10 +22,13 @@
     <ul class="list-group">
         {% for comment in topic.comments.all %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ comment.text }}
             <div>
-                <a href="{% url 'comment_edit' comment.id %}" class="btn btn-primary btn-sm">Edit</a>
-                <a href="{% url 'comment_delete' comment.id %}" class="btn btn-danger btn-sm">Delete</a>
+                <p><h5> {{ comment.text }} </h5></p>
+                <small>Criado por: <strong>{{ comment.author }}</strong> em {{ comment.created_at }}</small>   
+            </div>
+            <div>
+                <a href="" class="btn btn-outline-primary btn-sm">Editar</a>
+                <a href="" class="btn btn-outline-danger btn-sm">Apagar</a>
             </div>
         </li>
         {% empty %}

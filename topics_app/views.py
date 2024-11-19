@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import Topic
-from .forms import TopicForm
+from .models import Topic, Comment
+from .forms import TopicForm, CommentForm
 from django.contrib.auth.decorators import login_required
 
 #CASO NÃO ESTEJA LOGADO SER REDIRECIONADO PARA A PÁGINA LOGIN
@@ -60,4 +60,17 @@ def editar_topico(request, topic_id):
         form = TopicForm(instance=topic)
     return render(request, "topics_app/criarTopico.html", {"form": form})
 
-
+@login_required
+def criacao_comentarios(request, topic_id):
+    topic = get_object_or_404(Topic, id=topic_id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.topic = topic
+            comment.save()
+            return redirect("/")
+    else:
+        form = CommentForm()
+    return render(request, "topics_app/criarComentario.html", {"form": form})
