@@ -30,7 +30,8 @@ Depois, para se ativar o mesmo, coloca-se `venv\Scripts\activate` e para se inst
 
 `pip install -r requirements.txt`
 
-Neste caso, já existe uma base de dados disponibilizada e um utilizador (admin) para realizar/verificar as funcionalidades podendo ser acedido através das seguintes credenciais:
+Por fim é só dar run ao server, com o comando `python manage.py runserver` e aceder ao URL disponibilizado (localhost).
+Neste caso já existe uma base de dados disponibilizada e um utilizador (admin) para realizar/verificar as funcionalidades podendo ser acedido através das seguintes credenciais:
 
 `Username`: adminTeste
 `Password`: testedjango
