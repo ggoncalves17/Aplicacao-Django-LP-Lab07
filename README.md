@@ -22,10 +22,15 @@ Esta aplicação foi desenvolvida no âmbito da Unidade Curricular de Laboratór
 
 ## *Requisitos*
 
-Para dar run à aplicação, aconselha-se a criação de um ambiente virtual para se poder isolar as dependências do mesmo recorrendo ao comando:
+Para dar run à aplicação, aconselha-se a criação de um ambiente virtual para se poder isolar as dependências do mesmo, recorrendo ao comando:
 
 `python -m venv venv`
 
-Depois, para se ativar o mesmo coloca-se `venv\Scripts\activate` e para se instalar as dependências necessárias coloca-se:
+Depois, para se ativar o mesmo, coloca-se `venv\Scripts\activate` e para se instalar as dependências necessárias coloca-se:
 
 `pip install -r requirements.txt`
+
+Neste caso, já existe uma base de dados disponibilizada e um utilizador (admin) para realizar/verificar as funcionalidades podendo ser acedido através das seguintes credenciais:
+
+`Username`: adminTeste
+`Password`: testedjango
