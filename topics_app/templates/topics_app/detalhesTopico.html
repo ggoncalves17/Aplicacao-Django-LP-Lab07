@@ -10,6 +10,7 @@
     <div>
         <div class="d-flex justify-content-between align-items-center">
             <h2>Comentários</h2>
+            {# Form que é gerado com os campos definidos no forms.py #}
             <form method="post" class="d-flex">
                 {% csrf_token %}
                 {{ form.as_p }}

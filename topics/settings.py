@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# REFERÊNCIAS -> https://docs.djangoproject.com/en/5.1/ref/settings/#login-url
+# REFERÊNCIA -> https://docs.djangoproject.com/en/5.1/ref/settings/#login-url
+# URL para redirecionar o utilizador não autenticado para a página de login 
 LOGIN_URL = "/admin/"
 
 # Application definition

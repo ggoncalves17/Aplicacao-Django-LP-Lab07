@@ -5,7 +5,7 @@ from .forms import TopicForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
-
+# Listagem de todos os tópicos
 @login_required
 def lista_topicos(request):
     topics_list = Topic.objects.all()
@@ -13,6 +13,7 @@ def lista_topicos(request):
     return render(request, "topics_app/index.html", context)
 
 
+# Criação de um novo tópico
 @login_required
 def criacao_topicos(request):
     if request.method == "POST":
@@ -28,12 +29,14 @@ def criacao_topicos(request):
     return render(request, "topics_app/criarTopico.html", {"form": form, "title": "Criar Novo Tópico"})
 
 
+# Detalhes de um tópico específico
 @login_required
 def detalhes_topicos(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
     return render(request, "topics_app/detalhesTopico.html", {"topic": topic})
 
 
+# Apaga um tópico 
 @login_required
 def apagar_topico(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
@@ -45,6 +48,7 @@ def apagar_topico(request, topic_id):
     return render(request, "topics_app/apagarTopico.html", {"topic": topic, "title": "Apagar Tópico"})
 
 
+# Edita um tópico 
 @login_required
 def editar_topico(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
@@ -61,6 +65,8 @@ def editar_topico(request, topic_id):
         form = TopicForm(instance=topic)
     return render(request, "topics_app/criarTopico.html", {"form": form, "title": "Editar Tópico"})
 
+
+# Criação de um novo comentário num tópico
 @login_required
 def criacao_comentarios(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
@@ -76,6 +82,8 @@ def criacao_comentarios(request, topic_id):
         form = CommentForm()
     return render(request, "topics_app/criarComentario.html", {"form": form, "title": "Criar Comentário"})
 
+
+# Edita um comentário 
 @login_required
 def editar_comentario(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -92,6 +100,8 @@ def editar_comentario(request, comment_id):
         form = CommentForm(instance=comment)
     return render(request, "topics_app/criarComentario.html", {"form": form, "title": "Editar Comentário"})
 
+
+# Apaga um comentário 
 @login_required
 def apagar_comentario(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -102,6 +112,9 @@ def apagar_comentario(request, comment_id):
         return redirect('topic_detail', comment.topic.id)
     return render(request, "topics_app/apagarTopico.html", {"comment": comment, "title": "Apagar Comentário"})
 
+
+# REFERÊCIA -> https://docs.djangoproject.com/en/5.1/topics/auth/default/#how-to-log-a-user-out
+# Logout do utilizador
 @login_required
 def logout_view(request):
     logout(request)

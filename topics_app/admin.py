@@ -1,4 +1,6 @@
 from django.contrib import admin
-from .models import Topic
+from .models import Topic, Comment
 
-admin.site.register(Topic)
+# Regista o modelo Topic e Comment no painel de administração.
+admin.site.register(Topic)  
+admin.site.register(Comment)  

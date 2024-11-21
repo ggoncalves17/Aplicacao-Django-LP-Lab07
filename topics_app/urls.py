@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth.views import LogoutView
 
+# Lista de URLs para as devidas views do projeto juntamente com o 'name' que é o pseudónimo
 urlpatterns = [
     path('', views.lista_topicos, name='topic_list'),
     path('topics/new/', views.criacao_topicos, name='topic_create'),
