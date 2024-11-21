@@ -26,6 +26,6 @@ Para dar run à aplicação, aconselha-se a criação de um ambiente virtual par
 
 `python -m venv venv`
 
-Depois, para se ativar o mesmo coloca-se 'venv\Scripts\activate' e para se instalar as dependências necessárias coloca-se:
+Depois, para se ativar o mesmo coloca-se `venv\Scripts\activate` e para se instalar as dependências necessárias coloca-se:
 
 `pip install -r requirements.txt`
