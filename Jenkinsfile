@@ -24,6 +24,8 @@ pipeline {
         stage('Executar Testes') {
             steps {
                 sh './venv/bin/coverage run --source="." manage.py test'
+                sh './venv/bin/coverage xml'
+
             }
         }
         stage('Gerar Relatórios de Cobertura') {
@@ -38,7 +40,7 @@ pipeline {
 
     post {
         always {
-            junit '*/**/TEST-*.xml'
+            junit 'coverage.xml'
             publishCoverage adapters: [coberturaAdapter(path: '**/coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE')
             archiveArtifacts artifacts: 'htmlcov/**', fingerprint: true
         }
