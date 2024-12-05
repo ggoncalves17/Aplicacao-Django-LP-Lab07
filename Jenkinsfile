@@ -2,6 +2,19 @@ pipeline {
     agent any
 
     stages {
+        stage('Listar Variáveis de Ambiente') {
+            steps {
+                bat 'set'
+            }
+        }
+        stage('Verificar Python e pip') {
+            steps {
+                bat '''
+                    python --version
+                    pip --version
+                '''
+            }
+        }
         stage('Clonar Repositório') {
             steps {
                 git branch: 'main', url: 'https://github.com/ggoncalves17/Aplicacao-Django-LP-Lab07.git'
@@ -20,7 +33,7 @@ pipeline {
         stage('Executar Testes') {
             steps {
                 bat '''
-                    python -m pytest --junitxml=test-reports/results.xml --cov=. --cov-report=xml
+                    python -m pytest --junitxml=results.xml topics_app/tests.py
                 '''
             }
         }
@@ -35,9 +48,8 @@ pipeline {
 
     post {
         always {
-            junit 'test-reports/results.xml'
-            publishCoverage adapters: [coberturaAdapter(path: '/coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE')
-            archiveArtifacts artifacts: 'htmlcov/', fingerprint: true
+            junit 'results.xml'
+            archiveArtifacts artifacts: '**/results.xml', allowEmptyArchive: true
         }
         failure {
             echo 'Build falhou!'
