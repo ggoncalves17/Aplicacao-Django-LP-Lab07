@@ -1,79 +1,113 @@
-# Importa as classes necessárias para criar e testar componentes Django
-from django.test import TestCase, Client
+# Importa as classes necessárias
 from django.contrib.auth.models import User
 from topics_app.models import Topic, Comment
-from topics_app.forms import TopicForm, CommentForm
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.common.keys import Keys
+import time
 
-# REFERÊNCIA -> https://docs.djangoproject.com/en/5.1/topics/testing/overview/
-# Classe para testar a criação dos tópicos
-class TesteTopico(TestCase):
 
-    # Configuração inicial com a criação de um utilizador e de um tópico
+class TestesSelenium(StaticLiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.selenium = WebDriver()
+        cls.selenium.implicitly_wait(10)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super().tearDownClass()
+
     def setUp(self):
-        self.user = User.objects.create_user(username="utilizadorTeste", password="12345")
+        self.user = User.objects.create_superuser(username="admin", password="admin", email="admin@gmail.com")
         self.topic = Topic.objects.create(
-            title="Tópico Teste",
-            description="Descrição Teste do Tópico",
-            author=self.user
+            title = "Tópico Teste",
+            description = "Descrição Teste",
+            author = self.user
         )
 
-    # Verifica se o tópico foi criado corretamente
-    def teste_criacao_topico(self):
+
+    # TU01: Testar método _str_ de Topic
+    def test_str_topic(self):
         self.assertEqual(str(self.topic), "Tópico Teste")
-        self.assertEqual(self.topic.author.username, "utilizadorTeste")
 
-# Classe para testar a criação dos comentários
-class TesteComentario(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="utilizadorTeste", password="12345")
-        self.topic = Topic.objects.create(
-            title="Tópico Teste",
-            description="Descrição Teste do Tópico",
-            author=self.user
+    # TU02: Testar método _str_ de Comment
+    def test_str_comment(self):
+        comment = Comment.objects.create(
+            text = "Comentário Teste",
+            topic = self.topic,
+            author = self.user
         )
-        self.comment = Comment.objects.create(
-            topic=self.topic,
-            text="Comentário Teste",
-            author=self.user
-        )
+        self.assertEqual(str(comment), f"Comments on {self.topic.title} by {self.user.username}")
 
-    def teste_criacao_comentario(self):
-        self.assertEqual(str(self.comment), f"Comments on {self.topic.title} by {self.user.username}")
-        self.assertEqual(self.comment.topic.title, "Tópico Teste")
-  
-# Classe para testar o login dos admins
-class TesteLoginAdmin(TestCase):
-    def setUp(self):
-        self.admin = User.objects.create_superuser(username="admin", password="admin", email="admin@gmail.com")
-        self.client = Client()
 
-    def teste_login_admin(self):
-        login = self.client.login(username="admin", password="admin")
-        self.assertTrue(login)
+    # TF01: Validar login com credenciais corretas e incorretas
+    def test_login(self):
+
+        self.selenium.get(f"{self.live_server_url}/admin/login/")
+        username_input = self.selenium.find_element(By.NAME, "username")
+        username_input.send_keys("admin")
+        password_input = self.selenium.find_element(By.NAME, "password")
+        password_input.send_keys("admin")
+        self.selenium.find_element(By.XPATH, '//input[@value="Log in"]').click()
+
+        url_atual = self.selenium.current_url
+        self.assertEqual(url_atual, f"{self.live_server_url}/admin/")
+
+
+    # TF02: Validar a listagem de tópicos
+    def test_listagem_topicos(self):
+
+        self.selenium.get(f"{self.live_server_url}/admin/login/")
+        username_input = self.selenium.find_element(By.NAME, "username")
+        username_input.send_keys("admin")
+        password_input = self.selenium.find_element(By.NAME, "password")
+        password_input.send_keys("admin")
+        self.selenium.find_element(By.XPATH, '//input[@value="Log in"]').click()
         
-        response = self.client.get("/admin/")
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Django administration")
+        self.selenium.get(f"{self.live_server_url}")
 
-# Classe para testar se o tópico aparece na página de todos os tópicos
-class TesteTopicoViews(TestCase):
+        titulo = self.selenium.find_element(By.TAG_NAME, 'h5').text
+        # Foi necessário dar nome de uma classe ao <p> que contém a descrição
+        descricao = self.selenium.find_element(By.CLASS_NAME, 'test_criar_topico').text
 
-    # Configuração inicial com a criação de um utilizador e de um tópico
-    def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(username="utilizadorTeste", password="12345")
-        self.topic = Topic.objects.create(
-            title="Tópico Teste",
-            description="Descrição Teste do Tópico",
-            author=self.user
-        )
+        self.assertIn("Tópico Teste", titulo)
+        self.assertIn("Descrição Teste", descricao)
 
-    # Verifica se o tópico aparece na lista de todos os tópicos, que é a página inicial
-    def teste_lista_topicos(self):
-        self.client.login(username="utilizadorTeste", password="12345")
-        response = self.client.get("/")
-        self.assertEqual(response.status_code, 200)
+    # TI01: Verificar criação de tópicos por utilizadores autenticados
+    def test_criar_topico(self):
+        self.selenium.get(f"{self.live_server_url}/admin/login/")
+        self.selenium.find_element(By.NAME, "username").send_keys("admin")
+        self.selenium.find_element(By.NAME, "password").send_keys("admin")
+        self.selenium.find_element(By.XPATH, '//input[@value="Log in"]').click()
 
-        topicos = Topic.objects.all()
-        self.assertContains(response, "Tópico Teste")
-        self.assertContains(response, "Descrição Teste do Tópico")
+        self.selenium.get(f"{self.live_server_url}/topics/new/")
+        self.selenium.find_element(By.NAME, "title").send_keys("Tópico Teste - Página Criação")
+        self.selenium.find_element(By.NAME, "description").send_keys("Descrição Teste - Criação")
+        self.selenium.find_element(By.XPATH, '//button[text()="OK"]').click()
+
+        self.selenium.get(f"{self.live_server_url}")
+
+        self.assertIn("Tópico Teste - Página Criação", self.selenium.page_source)
+        self.assertIn("Descrição Teste - Criação", self.selenium.page_source)
+
+    # TI02: Garantir que utilizadores não autenticados não podem criar tópicos
+    def test_criar_topico_nao_autenticado(self):
+        self.selenium.get(f"{self.live_server_url}/topics/new/")
+        self.assertIn("/admin/login/", self.selenium.current_url)
+
+    # TR01: Garantir que a listagem de tópicos funciona após alterações no código
+    def test_listagem_apos_alteracao(self):
+        Topic.objects.create(title="Tópico Teste 1", description="Descrição Teste 1", author=self.user)
+        Topic.objects.create(title="Tópico Teste 2", description="Descrição Teste 2", author=self.user)
+
+        self.selenium.get(f"{self.live_server_url}/admin/login/")
+        self.selenium.find_element(By.NAME, "username").send_keys("admin")
+        self.selenium.find_element(By.NAME, "password").send_keys("admin")
+        self.selenium.find_element(By.XPATH, '//input[@value="Log in"]').click()
+
+        self.selenium.get(f"{self.live_server_url}/")
+        self.assertIn("Tópico Teste 1", self.selenium.page_source)
+        self.assertIn("Tópico Teste 2", self.selenium.page_source)
